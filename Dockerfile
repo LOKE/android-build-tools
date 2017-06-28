@@ -1,5 +1,7 @@
 FROM ubuntu:16.04
 
+MAINTAINER LOKE
+
 WORKDIR /tmp
 
 # Installing packages
@@ -44,25 +46,35 @@ RUN apt-get update && \
 ENV ANDROID_HOME /opt/android-sdk
 ENV ANDROID_NDK  /opt/android-ndk
 
-ENV ANDROID_BUILD_TOOLS_VERSION="25.0.2"
-ENV ANDROID_SDK_VERSION="25.2.3"
+ARG BUILD_TOOLS_VERSION="25.0.2"
+ENV ANDROID_BUILD_TOOLS_VERSION=${BUILD_TOOLS_VERSION}
+ARG SDK_VERSION="26.0.2"
+ENV ANDROID_SDK_VERSION=${SDK_VERSION}
 
 RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/tools_r${ANDROID_SDK_VERSION}-linux.zip  && \
     unzip android-sdk.zip && \
     rm -fr android-sdk.zip && \
     mkdir $ANDROID_HOME && \
-    mv tools $ANDROID_HOME && \
+    mv tools $ANDROID_HOME
 
     # Install Android components
-    echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter android-25 && \
-    echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter platform-tools && \
-    echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS_VERSION} && \
-    echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter extra-android-m2repository && \
+RUN echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter android-25 && \
+    echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS_VERSION}
+
+RUN echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter extra-android-m2repository && \
     echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter extra-google-google_play_services && \
     echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter extra-google-m2repository
 
+RUN echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter platform-tools
+
+RUN mkdir -p /root/.android
+RUN touch /root/.android/repositories.cfg
+RUN yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+# RUN echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter patcher-v4
+
 # Get the latest version from https://developer.android.com/ndk/downloads/index.html
-ENV ANDROID_NDK_VERSION="13"
+ARG NDK_VERSION="13"
+ENV ANDROID_NDK_VERSION=${NDK_VERSION}
 
 # Install Android NDK, put it in a separate RUN to avoid travis-ci timeout in 10 minutes.
 RUN wget -q -O android-ndk.zip http://dl.google.com/android/repository/android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
