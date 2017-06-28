@@ -69,8 +69,9 @@ RUN echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --fil
 
 RUN mkdir -p /root/.android
 RUN touch /root/.android/repositories.cfg
-RUN yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
-# RUN echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter patcher-v4
+
+RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "extras;google;m2repository"
+RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "patcher;v4"
 
 # Get the latest version from https://developer.android.com/ndk/downloads/index.html
 ARG NDK_VERSION="13"
