@@ -5,7 +5,8 @@ MAINTAINER LOKE
 WORKDIR /tmp
 
 # Installing packages
-RUN apt-get install software-properties-common && \
+RUN apt-get update && \
+    apt-get install software-properties-common && \
     apt-add-repository -y universe && \
     apt-add-repository -y ppa:openjdk-r/ppa && \
     apt-get update && \
