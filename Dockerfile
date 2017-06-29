@@ -6,7 +6,7 @@ WORKDIR /tmp
 
 # Installing packages
 RUN apt-get update && \
-    apt-get install software-properties-common && \
+    apt-get install -y --no-install-recommends software-properties-common && \
     apt-add-repository -y universe && \
     apt-add-repository -y ppa:openjdk-r/ppa && \
     apt-get update && \
