@@ -10,8 +10,10 @@ RUN apt-get update && \
         build-essential \
         autoconf \
         git \
+        ca-certificates \
         curl \
-        wget \
+        groff \
+        less \
         lib32stdc++6 \
         lib32z1 \
         lib32z1-dev \
@@ -28,9 +30,13 @@ RUN apt-get update && \
         ocaml \
         openssh-client \
         pkg-config \
+        python \
+        python-pip \
+        python-setuptools \
         python-software-properties \
         software-properties-common \
         unzip \
+        wget \
         zip \
         zlib1g-dev && \
     apt-add-repository -y ppa:openjdk-r/ppa && \
@@ -84,9 +90,7 @@ RUN wget -q -O android-ndk.zip http://dl.google.com/android/repository/android-n
     mv android-ndk-r${ANDROID_NDK_VERSION} $ANDROID_NDK
 
 # AWS CLI
-RUN apt-get install -y --no-install-recommends \
-    python python-pip python-setuptools ca-certificates groff less && \
-    pip --no-cache-dir install awscli && \
+RUN pip --no-cache-dir install awscli && \
     rm -rf /var/cache/apk/*
 
 # Add android commands to PATH
