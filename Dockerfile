@@ -5,7 +5,9 @@ MAINTAINER LOKE
 WORKDIR /tmp
 
 # Installing packages
-RUN apt-add-repository universe && \
+RUN apt-get install software-properties-common && \
+    apt-add-repository -y universe && \
+    apt-add-repository -y ppa:openjdk-r/ppa && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
@@ -35,12 +37,10 @@ RUN apt-add-repository universe && \
         python-pip \
         python-setuptools \
         python-software-properties \
-        software-properties-common \
         unzip \
         wget \
         zip \
         zlib1g-dev && \
-    apt-add-repository -y ppa:openjdk-r/ppa && \
     apt-get install -y openjdk-8-jdk && \
     rm -rf /var/lib/apt/lists/ && \
     apt-get clean
