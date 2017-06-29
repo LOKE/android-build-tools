@@ -83,6 +83,12 @@ RUN wget -q -O android-ndk.zip http://dl.google.com/android/repository/android-n
     rm -fr $ANDROID_NDK android-ndk.zip && \
     mv android-ndk-r${ANDROID_NDK_VERSION} $ANDROID_NDK
 
+# AWS CLI
+RUN apt-get install -y --no-install-recommends \
+    python py-pip py-setuptools ca-certificates groff less && \
+    pip --no-cache-dir install awscli && \
+    rm -rf /var/cache/apk/*
+
 # Add android commands to PATH
 ENV ANDROID_SDK_HOME $ANDROID_HOME
 ENV PATH $PATH:$ANDROID_SDK_HOME/tools:$ANDROID_SDK_HOME/platform-tools:$ANDROID_SDK_HOME/build-tools/${ANDROID_BUILD_TOOLS_VERSION}:$ANDROID_NDK
