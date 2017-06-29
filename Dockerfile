@@ -85,7 +85,7 @@ RUN wget -q -O android-ndk.zip http://dl.google.com/android/repository/android-n
 
 # AWS CLI
 RUN apt-get install -y --no-install-recommends \
-    python py-pip py-setuptools ca-certificates groff less && \
+    python python-pip python-setuptools ca-certificates groff less && \
     pip --no-cache-dir install awscli && \
     rm -rf /var/cache/apk/*
 
