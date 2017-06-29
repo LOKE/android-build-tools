@@ -5,7 +5,8 @@ MAINTAINER LOKE
 WORKDIR /tmp
 
 # Installing packages
-RUN apt-get update && \
+RUN apt-add-repository universe && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
         autoconf \
