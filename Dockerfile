@@ -54,10 +54,8 @@ RUN apt-get update && \
 ENV ANDROID_HOME /opt/android-sdk
 ENV ANDROID_NDK  /opt/android-ndk
 
-ARG BUILD_TOOLS_VERSION="26.0.2"
+ARG BUILD_TOOLS_VERSION="27.0.3"
 ENV ANDROID_BUILD_TOOLS_VERSION=${BUILD_TOOLS_VERSION}
-ARG SDK_VERSION="26.0.2"
-ENV ANDROID_SDK_VERSION=${SDK_VERSION}
 
 RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip  && \
     unzip android-sdk.zip && \
@@ -66,7 +64,7 @@ RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tool
     mv tools $ANDROID_HOME
 
     # Install Android components
-RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter android-26 && \
+RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter android-27 && \
     echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS_VERSION}
 
 RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-android-m2repository && \
