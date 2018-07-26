@@ -59,7 +59,7 @@ ENV ANDROID_BUILD_TOOLS_VERSION=${BUILD_TOOLS_VERSION}
 ARG SDK_VERSION="26.0.2"
 ENV ANDROID_SDK_VERSION=${SDK_VERSION}
 
-RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/tools_r${ANDROID_SDK_VERSION}-linux.zip  && \
+RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/build-tools_r${ANDROID_SDK_VERSION}-linux.zip  && \
     unzip android-sdk.zip && \
     rm -fr android-sdk.zip && \
     mkdir $ANDROID_HOME && \
