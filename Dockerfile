@@ -66,14 +66,14 @@ RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tool
     mv tools $ANDROID_HOME
 
     # Install Android components
-RUN echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter android-26 && \
-    echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS_VERSION}
+RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter android-26 && \
+    echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS_VERSION}
 
-RUN echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter extra-android-m2repository && \
-    echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter extra-google-google_play_services && \
-    echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter extra-google-m2repository
+RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-android-m2repository && \
+    echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-google-google_play_services && \
+    echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-google-m2repository
 
-RUN echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter platform-tools
+RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter platform-tools
 
 RUN mkdir -p /root/.android
 RUN touch /root/.android/repositories.cfg
