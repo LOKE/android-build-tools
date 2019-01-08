@@ -93,6 +93,10 @@ RUN wget -q -O android-ndk.zip http://dl.google.com/android/repository/android-n
 RUN pip --no-cache-dir install awscli && \
     rm -rf /var/cache/apk/*
 
+# Node JS
+RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+RUN sudo apt-get install -y nodejs
+
 # Fastlane
 RUN apt-get update && \
     apt-get install -y ruby-dev build-essential dh-autoreconf && \
