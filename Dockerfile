@@ -11,37 +11,37 @@ RUN apt-get update && \
     apt-add-repository -y ppa:openjdk-r/ppa && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        build-essential \
-        autoconf \
-        git \
-        ca-certificates \
-        curl \
-        groff \
-        less \
-        lib32stdc++6 \
-        lib32z1 \
-        lib32z1-dev \
-        lib32ncurses5 \
-        libc6-dev \
-        libgmp-dev \
-        libmpc-dev \
-        libmpfr-dev \
-        libxslt-dev \
-        libxml2-dev \
-        locales \
-        m4 \
-        ncurses-dev \
-        ocaml \
-        openssh-client \
-        pkg-config \
-        python \
-        python-pip \
-        python-setuptools \
-        python-software-properties \
-        unzip \
-        wget \
-        zip \
-        zlib1g-dev && \
+    build-essential \
+    autoconf \
+    git \
+    ca-certificates \
+    curl \
+    groff \
+    less \
+    lib32stdc++6 \
+    lib32z1 \
+    lib32z1-dev \
+    lib32ncurses5 \
+    libc6-dev \
+    libgmp-dev \
+    libmpc-dev \
+    libmpfr-dev \
+    libxslt-dev \
+    libxml2-dev \
+    locales \
+    m4 \
+    ncurses-dev \
+    ocaml \
+    openssh-client \
+    pkg-config \
+    python \
+    python-pip \
+    python-setuptools \
+    python-software-properties \
+    unzip \
+    wget \
+    zip \
+    zlib1g-dev && \
     apt-get install -y openjdk-8-jdk && \
     rm -rf /var/lib/apt/lists/ && \
     apt-get clean
@@ -63,7 +63,7 @@ RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tool
     mkdir $ANDROID_HOME && \
     mv tools $ANDROID_HOME
 
-    # Install Android components
+# Install Android components
 RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter android-27 && \
     echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS_VERSION}
 
@@ -92,6 +92,11 @@ RUN wget -q -O android-ndk.zip http://dl.google.com/android/repository/android-n
 # AWS CLI
 RUN pip --no-cache-dir install awscli && \
     rm -rf /var/cache/apk/*
+
+# Fastlane
+RUN apt-get update && \
+    apt-get install -y ruby-dev build-essential dh-autoreconf && \
+    gem install fastlane
 
 # Add android commands to PATH
 ENV ANDROID_SDK_HOME $ANDROID_HOME

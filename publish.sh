@@ -10,5 +10,5 @@ echo Building Docker Image: "$IMAGE_NAME"
 ./build.sh "$IMAGE_NAME"
 docker push "$IMAGE_NAME"
 
-docker tag "$IMAGE_NAME" "loke/$PROJECT_NAME:$ANDROID_API_VERSION"
+docker tag "$IMAGE_NAME" "loke/$PROJECT_NAME:$ANDROID_API_VERSION-fastlane"
 docker push "loke/$PROJECT_NAME:$ANDROID_API_VERSION"
