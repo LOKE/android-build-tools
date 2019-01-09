@@ -20,50 +20,47 @@ WORKDIR /tmp
 
 # Installing packages
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends software-properties-common && \
-    apt-add-repository -y universe && \
-    apt-add-repository -y ppa:openjdk-r/ppa && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    build-essential \
-    autoconf \
-    git \
-    ca-certificates \
-    # dh-autoreconf for Fastlane
-    dh-autoreconf \
-    curl \
-    groff \
-    less \
-    lib32stdc++6 \
-    lib32z1 \
-    lib32z1-dev \
-    lib32ncurses5 \
-    libc6-dev \
-    libgmp-dev \
-    libmpc-dev \
-    libmpfr-dev \
-    libxslt-dev \
-    libxml2-dev \
-    locales \
-    m4 \
-    ncurses-dev \
-    ocaml \
-    openssh-client \
-    pkg-config \
-    python \
-    python-pip \
-    python-setuptools \
-    python-software-properties \
-    # Ruby for Fastlane
-    ruby-dev \
-    unzip \
-    wget \
-    zip \
-    zlib1g-dev && \
-    # Java SDK
-    apt-get install -y openjdk-8-jdk && \
-    rm -rf /var/lib/apt/lists/ && \
-    apt-get clean
+  apt-get install -y --no-install-recommends software-properties-common && \
+  apt-add-repository -y universe && \
+  apt-add-repository -y ppa:openjdk-r/ppa && \
+  apt-get update && \
+  apt-get install -y --no-install-recommends \
+  build-essential \
+  autoconf \
+  git \
+  ca-certificates \
+  dh-autoreconf \
+  curl \
+  groff \
+  less \
+  lib32stdc++6 \
+  lib32z1 \
+  lib32z1-dev \
+  lib32ncurses5 \
+  libc6-dev \
+  libgmp-dev \
+  libmpc-dev \
+  libmpfr-dev \
+  libxslt-dev \
+  libxml2-dev \
+  locales \
+  m4 \
+  ncurses-dev \
+  ocaml \
+  openssh-client \
+  pkg-config \
+  python \
+  python-pip \
+  python-setuptools \
+  python-software-properties \
+  ruby-dev \
+  unzip \
+  wget \
+  zip \
+  zlib1g-dev && \
+  apt-get install -y openjdk-8-jdk && \
+  rm -rf /var/lib/apt/lists/ && \
+  apt-get clean
 
 # ENV LANG en_US.UTF-8
 # RUN locale-gen $LANG
@@ -71,18 +68,18 @@ RUN apt-get update && \
 # COPY README.md /README.md
 
 RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip  && \
-    unzip android-sdk.zip && \
-    rm -fr android-sdk.zip && \
-    mkdir $ANDROID_HOME && \
-    mv tools $ANDROID_HOME
+  unzip android-sdk.zip && \
+  rm -fr android-sdk.zip && \
+  mkdir $ANDROID_HOME && \
+  mv tools $ANDROID_HOME
 
 # Install Android components
 RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter android-${ANDROID_API_VERSION} && \
-    echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS_VERSION}
+  echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS_VERSION}
 
 RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-android-m2repository && \
-    echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-google-google_play_services && \
-    echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-google-m2repository
+  echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-google-google_play_services && \
+  echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-google-m2repository
 
 RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter platform-tools
 
@@ -91,9 +88,9 @@ RUN touch /root/.android/repositories.cfg
 
 # Install Android NDK, put it in a separate RUN to avoid travis-ci timeout in 10 minutes.
 RUN wget -q -O android-ndk.zip http://dl.google.com/android/repository/android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
-    unzip -q android-ndk.zip && \
-    rm -fr $ANDROID_NDK android-ndk.zip && \
-    mv android-ndk-r${ANDROID_NDK_VERSION} $ANDROID_NDK
+  unzip -q android-ndk.zip && \
+  rm -fr $ANDROID_NDK android-ndk.zip && \
+  mv android-ndk-r${ANDROID_NDK_VERSION} $ANDROID_NDK
 
 RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "extras;google;m2repository"
 RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "patcher;v4"
@@ -105,7 +102,7 @@ RUN gem install fastlane -NV
 
 # AWS CLI
 RUN pip --no-cache-dir install awscli && \
-    rm -rf /var/cache/apk/*
+  rm -rf /var/cache/apk/*
 
 # Node JS for React Native
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
