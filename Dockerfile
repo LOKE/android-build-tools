@@ -2,6 +2,20 @@ FROM ubuntu:16.04
 
 MAINTAINER LOKE
 
+ENV ANDROID_HOME /opt/android-sdk
+ENV ANDROID_NDK  /opt/android-ndk
+
+ARG API_VERSION="27"
+ENV ANDROID_API_VERSION=${API_VERSION}
+
+ARG BUILD_TOOLS_VERSION="27.0.3"
+ENV ANDROID_BUILD_TOOLS_VERSION=${BUILD_TOOLS_VERSION}
+
+# Get the latest version from https://developer.android.com/ndk/downloads/index.html
+ARG NDK_VERSION="18"
+ENV ANDROID_NDK_VERSION=${NDK_VERSION}
+
+
 WORKDIR /tmp
 
 # Installing packages
@@ -15,6 +29,8 @@ RUN apt-get update && \
     autoconf \
     git \
     ca-certificates \
+    # dh-autoreconf for Fastlane
+    dh-autoreconf \
     curl \
     groff \
     less \
@@ -38,10 +54,13 @@ RUN apt-get update && \
     python-pip \
     python-setuptools \
     python-software-properties \
+    # Ruby for Fastlane
+    ruby-dev \
     unzip \
     wget \
     zip \
     zlib1g-dev && \
+    # Java SDK
     apt-get install -y openjdk-8-jdk && \
     rm -rf /var/lib/apt/lists/ && \
     apt-get clean
@@ -51,12 +70,6 @@ RUN apt-get update && \
 
 # COPY README.md /README.md
 
-ENV ANDROID_HOME /opt/android-sdk
-ENV ANDROID_NDK  /opt/android-ndk
-
-ARG BUILD_TOOLS_VERSION="27.0.3"
-ENV ANDROID_BUILD_TOOLS_VERSION=${BUILD_TOOLS_VERSION}
-
 RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip  && \
     unzip android-sdk.zip && \
     rm -fr android-sdk.zip && \
@@ -64,7 +77,7 @@ RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tool
     mv tools $ANDROID_HOME
 
 # Install Android components
-RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter android-27 && \
+RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter android-${ANDROID_API_VERSION} && \
     echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS_VERSION}
 
 RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-android-m2repository && \
@@ -76,31 +89,27 @@ RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter platf
 RUN mkdir -p /root/.android
 RUN touch /root/.android/repositories.cfg
 
-RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "extras;google;m2repository"
-RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "patcher;v4"
-
-# Get the latest version from https://developer.android.com/ndk/downloads/index.html
-ARG NDK_VERSION="13"
-ENV ANDROID_NDK_VERSION=${NDK_VERSION}
-
 # Install Android NDK, put it in a separate RUN to avoid travis-ci timeout in 10 minutes.
 RUN wget -q -O android-ndk.zip http://dl.google.com/android/repository/android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
     unzip -q android-ndk.zip && \
     rm -fr $ANDROID_NDK android-ndk.zip && \
     mv android-ndk-r${ANDROID_NDK_VERSION} $ANDROID_NDK
 
+RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "extras;google;m2repository"
+RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "patcher;v4"
+RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "platform-tools"
+RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-${ANDROID_API_VERSION}"
+
+# Fastlane
+RUN gem install fastlane -NV
+
 # AWS CLI
 RUN pip --no-cache-dir install awscli && \
     rm -rf /var/cache/apk/*
 
-# Node JS
+# Node JS for React Native
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install -y nodejs
-
-# Fastlane
-RUN apt-get update && \
-    apt-get install -y ruby-dev build-essential dh-autoreconf && \
-    gem install fastlane
 
 # Add android commands to PATH
 ENV ANDROID_SDK_HOME $ANDROID_HOME
