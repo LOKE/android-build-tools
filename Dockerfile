@@ -98,7 +98,7 @@ RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "platform-tools"
 RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-${ANDROID_API_VERSION}"
 
 # Fastlane
-RUN gem install fastlane -NV
+# RUN gem install fastlane -NV
 
 # AWS CLI
 RUN pip --no-cache-dir install awscli && \
@@ -119,3 +119,6 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 ENV TERM dumb
 ENV JAVA_OPTS "-Xms512m -Xmx1024m"
 ENV GRADLE_OPTS "-XX:+UseG1GC -XX:MaxGCPauseMillis=1000"
+
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
