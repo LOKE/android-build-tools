@@ -97,7 +97,7 @@ RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "patcher;v4"
 RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "platform-tools"
 RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-${ANDROID_API_VERSION}"
 RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}"
-
+RUN yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
 # Fastlane
 # RUN gem install fastlane -NV
