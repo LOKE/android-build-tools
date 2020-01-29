@@ -1,118 +1,61 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 MAINTAINER LOKE
 
 ENV ANDROID_HOME /opt/android-sdk
-ENV ANDROID_NDK  /opt/android-ndk
-
-ARG API_VERSION="27"
-ENV ANDROID_API_VERSION=${API_VERSION}
-
-ARG BUILD_TOOLS_VERSION="27.0.3"
-ENV ANDROID_BUILD_TOOLS_VERSION=${BUILD_TOOLS_VERSION}
-
-# Get the latest version from https://developer.android.com/ndk/downloads/index.html
-ARG NDK_VERSION="18"
-ENV ANDROID_NDK_VERSION=${NDK_VERSION}
-
 
 WORKDIR /tmp
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Installing packages
 RUN apt-get update && \
-  apt-get install -y --no-install-recommends software-properties-common && \
-  apt-add-repository -y universe && \
-  apt-add-repository -y ppa:openjdk-r/ppa && \
-  apt-get update && \
   apt-get install -y --no-install-recommends \
   build-essential \
-  autoconf \
-  git \
-  ca-certificates \
-  dh-autoreconf \
-  curl \
-  groff \
-  less \
-  lib32stdc++6 \
-  lib32z1 \
-  lib32z1-dev \
-  lib32ncurses5 \
-  libc6-dev \
-  libgmp-dev \
-  libmpc-dev \
-  libmpfr-dev \
-  libxslt-dev \
-  libxml2-dev \
-  locales \
-  m4 \
-  ncurses-dev \
-  ocaml \
-  openssh-client \
-  pkg-config \
-  python \
-  python-pip \
-  python-setuptools \
-  python-software-properties \
-  ruby-dev \
+  openjdk-8-jdk \
   unzip \
-  wget \
-  zip \
-  zlib1g-dev && \
-  apt-get install -y openjdk-8-jdk && \
+  awscli \
+  curl \
+  git \
+  ruby \
+  ruby-dev && \
   rm -rf /var/lib/apt/lists/ && \
   apt-get clean
 
-# ENV LANG en_US.UTF-8
-# RUN locale-gen $LANG
-
-# COPY README.md /README.md
-
-RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip  && \
+# install android sdk tools
+RUN curl -L -o android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip  && \
   unzip android-sdk.zip && \
   rm -fr android-sdk.zip && \
   mkdir $ANDROID_HOME && \
   mv tools $ANDROID_HOME
 
-# Install Android components
-RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter android-${ANDROID_API_VERSION} && \
-  echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS_VERSION}
+# Take a look at https://github.com/bitrise-io/android/blob/master/Dockerfile for what inspiration
 
-RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-android-m2repository && \
-  echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-google-google_play_services && \
-  echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter extra-google-m2repository
-
-RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter platform-tools
-
-RUN mkdir -p /root/.android
-RUN touch /root/.android/repositories.cfg
-
-# Install Android NDK, put it in a separate RUN to avoid travis-ci timeout in 10 minutes.
-RUN wget -q -O android-ndk.zip http://dl.google.com/android/repository/android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
-  unzip -q android-ndk.zip && \
-  rm -fr $ANDROID_NDK android-ndk.zip && \
-  mv android-ndk-r${ANDROID_NDK_VERSION} $ANDROID_NDK
-
-RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "extras;google;m2repository"
-RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "patcher;v4"
-RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "platform-tools"
-RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-${ANDROID_API_VERSION}"
-RUN yes | $ANDROID_HOME/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}"
 RUN yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
-# Fastlane
-# RUN gem install fastlane -NV
+RUN touch /root/.android/repositories.cfg
 
-# AWS CLI
-RUN pip --no-cache-dir install awscli && \
-  rm -rf /var/cache/apk/*
+RUN $ANDROID_HOME/tools/bin/sdkmanager "tools" "platform-tools"
+
+RUN yes | $ANDROID_HOME/tools/bin/sdkmanager \
+  "platforms;android-29" \
+  "platforms;android-28" \
+  "platforms;android-27" \
+  "build-tools;29.0.2" \
+  "build-tools;28.0.3" \
+  "build-tools;27.0.3"
 
 # Node JS for React Native
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install -y nodejs
 
+# Ruby tools
+RUN gem update --system
+RUN gem install bundler
+
 # Add android commands to PATH
 ENV ANDROID_SDK_HOME $ANDROID_HOME
-ENV PATH $PATH:$ANDROID_SDK_HOME/tools:$ANDROID_SDK_HOME/platform-tools:$ANDROID_SDK_HOME/build-tools/${ANDROID_BUILD_TOOLS_VERSION}:$ANDROID_NDK
+ENV PATH $PATH:$ANDROID_SDK_HOME/tools:$ANDROID_SDK_HOME/platform-tools:$ANDROID_SDK_HOME/build-tools/${ANDROID_BUILD_TOOLS_VERSION}
 
 # Export JAVA_HOME variable
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
