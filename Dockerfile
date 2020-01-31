@@ -67,3 +67,22 @@ ENV GRADLE_OPTS "-XX:+UseG1GC -XX:MaxGCPauseMillis=1000"
 
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
+
+# Android NDK Used for android c code, React Native needs it
+ENV ANDROID_NDK_HOME /opt/android-ndk
+ENV ANDROID_NDK_VERSION r20
+
+# download
+RUN mkdir /opt/android-ndk-tmp && \
+  cd /opt/android-ndk-tmp && \
+  wget -q https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
+  # uncompress
+  unzip -q android-ndk-${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
+  # move to its final location
+  mv ./android-ndk-${ANDROID_NDK_VERSION} ${ANDROID_NDK_HOME} && \
+  # remove temp dir
+  cd ${ANDROID_NDK_HOME} && \
+  rm -rf /opt/android-ndk-tmp
+
+# add to PATH
+ENV PATH ${PATH}:${ANDROID_NDK_HOME}
