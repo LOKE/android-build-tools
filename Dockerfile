@@ -75,9 +75,9 @@ ENV ANDROID_NDK_VERSION r20
 # download
 RUN mkdir /opt/android-ndk-tmp && \
   cd /opt/android-ndk-tmp && \
-  wget -q https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
+  curl -L -o android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
   # uncompress
-  unzip -q android-ndk-${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
+  unzip -q android-ndk.zip && \
   # move to its final location
   mv ./android-ndk-${ANDROID_NDK_VERSION} ${ANDROID_NDK_HOME} && \
   # remove temp dir
