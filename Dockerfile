@@ -52,8 +52,7 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install -y nodejs
 
 # Ruby tools
-RUN gem update --system
-RUN gem install bundler
+RUN gem install bundler 
 
 # Add android commands to PATH
 ENV ANDROID_SDK_HOME $ANDROID_HOME
