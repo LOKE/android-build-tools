@@ -38,9 +38,11 @@ RUN touch /root/.android/repositories.cfg
 RUN $ANDROID_HOME/tools/bin/sdkmanager "tools" "platform-tools"
 
 RUN yes | $ANDROID_HOME/tools/bin/sdkmanager \
+  "platforms;android-30" \
   "platforms;android-29" \
   "platforms;android-28" \
   "platforms;android-27" \
+  "build-tools;30.0.2" \
   "build-tools;29.0.2" \
   "build-tools;28.0.3" \
   "build-tools;27.0.3"
