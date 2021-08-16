@@ -49,11 +49,8 @@ RUN yes | $ANDROID_HOME/tools/bin/sdkmanager \
   "build-tools;27.0.3"
 
 # Node JS for React Native
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install -y nodejs
-
-# Ruby tools
-# RUN gem install bundler 
 
 # Add android commands to PATH
 ENV ANDROID_SDK_HOME $ANDROID_HOME
