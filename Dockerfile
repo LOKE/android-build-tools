@@ -18,7 +18,7 @@ RUN apt-get update && \
   curl \
   git \
   ruby \
-  ruby-dev && \
+  ruby-dev \
   bundler && \
   rm -rf /var/lib/apt/lists/ && \
   apt-get clean
